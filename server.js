@@ -51,6 +51,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Serve static files from 'public' and 'node_modules'
+// This middleware now also serves index.html by default if present at the root of 'public'
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/node_modules', express.static(path.join(__dirname, 'node_modules')));
 
@@ -86,23 +87,3 @@ app.get('/auth/google/callback',
     res.redirect('/');
   }
 );
-
-app.get('/logout', (req, res, next) => {
-    req.logout(err => {
-        if (err) { return next(err); }
-        res.redirect('/');
-    });
-});
-
-// --- Serve index.html for the root path ---
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
-});
-
-app.use('/api', apiRouter);
-
-
-// --- Start Server ---
-app.listen(PORT, () => {
-  console.log(`🚀 Server is running on http://localhost:${PORT}`);
-});
