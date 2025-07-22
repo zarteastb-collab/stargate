@@ -3,7 +3,7 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import path from 'path';
-import { fileURLToPath } = { fileURLToPath } from 'url';
+import { fileURLToPath } from 'url'; // Corrected import statement
 import apiRouter from './routes/api.js';
 import session from 'express-session';
 import passport from 'passport';
@@ -12,7 +12,7 @@ import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 // Load environment variables
 dotenv.config();
 
-// --- NEW: Check for required environment variables ---
+// --- Check for required environment variables ---
 const requiredEnvVars = ['GOOGLE_API_KEY', 'GOOGLE_CLIENT_ID', 'GOOGLE_CLIENT_SECRET', 'SESSION_SECRET'];
 for (const varName of requiredEnvVars) {
   if (!process.env[varName]) {
@@ -21,7 +21,7 @@ for (const varName of requiredEnvVars) {
   }
 }
 
-// --- NEW: Catch any unhandled errors that cause silent crashes ---
+// --- Catch any unhandled errors that cause silent crashes ---
 process.on('uncaughtException', (err, origin) => {
   console.error('FATAL UNCAUGHT EXCEPTION:', err);
   console.error('Exception origin:', origin);
