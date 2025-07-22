@@ -12,20 +12,20 @@ import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 // Load environment variables
 dotenv.config();
 
-// --- Check for required environment variables ---
+// --- Check for required environment variables (process.exit(1) removed) ---
 const requiredEnvVars = ['GOOGLE_API_KEY', 'GOOGLE_CLIENT_ID', 'GOOGLE_CLIENT_SECRET', 'SESSION_SECRET'];
 for (const varName of requiredEnvVars) {
   if (!process.env[varName]) {
     console.error(`FATAL ERROR: Environment variable ${varName} is not set. Please check your .env file.`);
-    process.exit(1); // Exit with a failure code
+    // process.exit(1); // Temporarily removed to get more error output
   }
 }
 
-// --- Catch any unhandled errors that cause silent crashes ---
+// --- Catch any unhandled errors that cause silent crashes (process.exit(1) removed) ---
 process.on('uncaughtException', (err, origin) => {
   console.error('FATAL UNCAUGHT EXCEPTION:', err);
   console.error('Exception origin:', origin);
-  process.exit(1);
+  // process.exit(1); // Temporarily removed to get more error output
 });
 
 // Setup for ES module __dirname
@@ -51,7 +51,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Serve static files from 'public' and 'node_modules'
-// This middleware now also serves index.html by default if present at the root of 'public'
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/node_modules', express.static(path.join(__dirname, 'node_modules')));
 
@@ -87,3 +86,22 @@ app.get('/auth/google/callback',
     res.redirect('/');
   }
 );
+
+app.get('/logout', (req, res, next) => {
+    req.logout(err => {
+        if (err) { return next(err); }
+        res.redirect('/');
+    });
+});
+
+// --- Serve index.html for the root path using express.static ---
+// The express.static middleware handles serving index.html by default if present
+// at the root of the 'public' directory when a root path is requested.
+
+app.use('/api', apiRouter);
+
+
+// --- Start Server ---
+app.listen(PORT, () => {
+  console.log(`🚀 Server is running on http://localhost:${PORT}`);
+});
