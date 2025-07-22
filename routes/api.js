@@ -1,4 +1,3 @@
----START routes/api.js CONTENT---
 // routes/api.js
 
 import { Router } from 'express';
@@ -16,4 +15,3 @@ router.get('/get-user', (req, res) => {
 // ...
 
 export default router;
----END routes/api.js CONTENT---
