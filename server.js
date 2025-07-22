@@ -3,7 +3,7 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import path from 'path';
-import { fileURLToPath } from 'url'; // Corrected import statement
+import { fileURLToPath } from 'url';
 import apiRouter from './routes/api.js';
 import session from 'express-session';
 import passport from 'passport';

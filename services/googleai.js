@@ -1,6 +1,6 @@
 // services/googleai.js
 
-import { GoogleGenerativeAI } = { GoogleGenerativeAI } from '@google/generative-ai';
+import { GoogleGenerativeAI } from '@google/generative-ai'; // Corrected import statement
 import dotenv from 'dotenv';
 
 dotenv.config();
