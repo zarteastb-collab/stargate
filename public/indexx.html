@@ -68,12 +68,12 @@
                     header.className = 'pane-header';
                     const label = document.createElement('span');
                     label.textContent = 'Pane'; // Default label
-                    
+
                     const subdivideBtn = document.createElement('button');
                     subdivideBtn.textContent = '⊞';
                     subdivideBtn.title = 'Subdivide this pane';
                     subdivideBtn.onclick = () => createGrid(pane); // RECURSIVE CALL
-                    
+
                     header.appendChild(label);
                     header.appendChild(subdivideBtn);
                     pane.appendChild(header);
