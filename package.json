@@ -1,0 +1,28 @@
+{
+  "name": "stargate-backend",
+  "version": "1.0.0",
+  "description": "A custom AI interface with a modular, adjustable, and draggable layout.",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "author": "Brett Anthony Dixon",
+  "license": "MIT",
+  "dependencies": {
+    "@google/generative-ai": "^0.14.1",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "express-session": "^1.18.0",
+    "passport": "^0.7.0",
+    "passport-google-oauth20": "^2.0.0",
+    "sortablejs": "^1.15.2",
+    "split.js": "^1.6.5"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.0"
+  }
+}
+
+
