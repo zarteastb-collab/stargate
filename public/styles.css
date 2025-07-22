@@ -1,0 +1,80 @@
+---START public/styles.css CONTENT---
+/* public/styles.css */
+html, body, #app-root {
+    height: 100%;
+    margin: 0;
+    font-family: -apple-system, BlinkMacMacSystemFont, "Segoe UI", sans-serif;
+    background-color: #131314;
+    color: #e3e3e3;
+    overflow: hidden;
+}
+* { box-sizing: border-box; }
+
+/* --- AUTH SCREEN --- */
+#auth-screen {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    text-align: center;
+}
+.login-btn {
+    display: inline-block;
+    padding: 12px 24px;
+    background-color: #4285F4;
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+    font-weight: bold;
+    margin-top: 20px;
+}
+
+/* --- RECURSIVE GRID & PANE STYLES --- */
+.grid-container {
+    display: flex;
+    height: 100%;
+    width: 100%;
+}
+.split-col {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+.split-pane {
+    background-color: #1e1f20;
+    border: 1px solid #333;
+    border-radius: 4px;
+    margin: 4px;
+    overflow: auto;
+    display: flex;
+    flex-direction: column;
+}
+.pane-header {
+    background-color: #2a2a2d;
+    padding: 4px 8px;
+    font-size: 12px;
+    color: #aaa;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    min-height: 28px;
+}
+.pane-header button {
+    background: none;
+    border: 1px solid #555;
+    color: #aaa;
+    cursor: pointer;
+    border-radius: 4px;
+    padding: 2px 6px;
+}
+.pane-header button:hover {
+    background-color: #3a3d40;
+}
+.gutter {
+    background-color: #333;
+    z-index: 10;
+}
+.gutter.gutter-vertical { cursor: col-resize; }
+.gutter.gutter-horizontal { cursor: row-resize; }
+---END public/styles.css CONTENT---

@@ -1,0 +1,93 @@
+---START public/index.html CONTENT---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MyAI Interface</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="auth-screen"></div>
+    <div id="app-root"></div>
+
+    <script src="/node_modules/split.js/dist/split.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const authScreen = document.getElementById('auth-screen');
+            const appRoot = document.getElementById('app-root');
+
+            try {
+                const response = await fetch('/api/get-user');
+                const data = await response.json();
+
+                if (data.user) {
+                    authScreen.style.display = 'none';
+                    appRoot.style.display = 'block';
+                    initializeApp(data.user);
+                } else {
+                    authScreen.style.display = 'flex';
+                    appRoot.style.display = 'none';
+                    authScreen.innerHTML = '<h2>Welcome!</h2><a href="/auth/google" class="login-btn">Sign in with Google</a>';
+                }
+            } catch (error) {
+                console.error("Error during auth check:", error);
+                authScreen.innerHTML = "<h2>Error loading application.</h2>";
+            }
+        });
+
+        let paneCounter = 0; // To give each new pane a unique ID
+
+        function initializeApp(user) {
+            const appRoot = document.getElementById('app-root');
+            createGrid(appRoot); // Create the initial, top-level grid
+        }
+
+        // --- CORE FUNCTION FOR RECURSIVE GRID ---
+        function createGrid(container) {
+            container.innerHTML = ''; // Clear the container first
+            container.classList.add('grid-container');
+            const columns = ['left-col', 'center-col', 'right-col'];
+            const columnElements = [];
+            // Create 3 main columns
+            for (const colId of columns) {
+                const col = document.createElement('div');
+                col.id = `col-${paneCounter++}`;
+                col.className = 'split-col';
+                container.appendChild(col);
+                columnElements.push(`#${col.id}`);
+
+                const paneElements = [];
+                // Create 3 panes within each column
+                for (let i = 1; i <= 3; i++) {
+                    const pane = document.createElement('div');
+                    const paneId = `pane-${paneCounter++}`;
+                    pane.id = paneId;
+                    pane.className = 'split-pane';
+
+                    const header = document.createElement('div');
+                    header.className = 'pane-header';
+                    const label = document.createElement('span');
+                    label.textContent = 'Pane'; // Default label
+                    
+                    const subdivideBtn = document.createElement('button');
+                    subdivideBtn.textContent = '⊞';
+                    subdivideBtn.title = 'Subdivide this pane';
+                    subdivideBtn.onclick = () => createGrid(pane); // RECURSIVE CALL
+                    
+                    header.appendChild(label);
+                    header.appendChild(subdivideBtn);
+                    pane.appendChild(header);
+                    col.appendChild(pane);
+                    paneElements.push(`#${paneId}`);
+                }
+                 // Make the panes in the column resizable
+                Split(paneElements, { direction: 'vertical', gutterSize: 8, minSize: 50 });
+            }
+            // Make the columns resizable
+            Split(columnElements, { gutterSize: 8, minSize: 200 });
+        }
+    </script>
+</body>
+</html>
+---END public/index.html CONTENT---
