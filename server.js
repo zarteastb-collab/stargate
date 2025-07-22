@@ -1,107 +1,78 @@
-// server.js
+/* public/styles.css */
+html, body, #app-root {
+    height: 100%;
+    margin: 0;
+    font-family: -apple-system, BlinkMacMacSystemFont, "Segoe UI", sans-serif;
+    background-color: #131314;
+    color: #e3e3e3;
+    overflow: hidden;
+}
+* { box-sizing: border-box; }
 
-import express from 'express';
-import dotenv from 'dotenv';
-import path from 'path';
-import { fileURLToPath } from 'url';
-import apiRouter from './routes/api.js';
-import session from 'express-session';
-import passport from 'passport';
-import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
-
-// Load environment variables
-dotenv.config();
-
-// --- Check for required environment variables (process.exit(1) removed) ---
-const requiredEnvVars = ['GOOGLE_API_KEY', 'GOOGLE_CLIENT_ID', 'GOOGLE_CLIENT_SECRET', 'SESSION_SECRET'];
-for (const varName of requiredEnvVars) {
-  if (!process.env[varName]) {
-    console.error(`FATAL ERROR: Environment variable ${varName} is not set. Please check your .env file.`);
-    // process.exit(1); // Temporarily removed to get more error output
-  }
+/* --- AUTH SCREEN --- */
+#auth-screen {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    text-align: center;
+}
+.login-btn {
+    display: inline-block;
+    padding: 12px 24px;
+    background-color: #4285F4;
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+    font-weight: bold;
+    margin-top: 20px;
 }
 
-// --- Catch any unhandled errors that cause silent crashes (process.exit(1) removed) ---
-process.on('uncaughtException', (err, origin) => {
-  console.error('FATAL UNCAUGHT EXCEPTION:', err);
-  console.error('Exception origin:', origin);
-  // process.exit(1); // Temporarily removed to get more error output
-});
-
-// Setup for ES module __dirname
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-const app = express();
-const PORT = process.env.PORT || 3001;
-
-// In-memory user database (for demonstration purposes)
-const users = {};
-
-// --- Middleware Setup ---
-app.use(session({
-  secret: process.env.SESSION_SECRET,
-  resave: false,
-  saveUninitialized: true,
-  cookie: { secure: false } // In production, use 'auto' or true with HTTPS
-}));
-app.use(passport.initialize());
-app.use(passport.session());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
-// Serve static files from 'public' and 'node_modules'
-app.use(express.static(path.join(__dirname, 'public')));
-app.use('/node_modules', express.static(path.join(__dirname, 'node_modules')));
-
-// --- Passport.js Configuration ---
-passport.use(new GoogleStrategy({
-    clientID: process.env.GOOGLE_CLIENT_ID,
-    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    callbackURL: "/auth/google/callback"
-  },
-  (accessToken, refreshToken, profile, done) => {
-    console.log("Google profile received:", profile);
-    users[profile.id] = { id: profile.id, name: profile.displayName, email: profile.emails[0].value, photo: profile.photos[0].value };
-    return done(null, users[profile.id]);
-  }
-));
-passport.serializeUser((user, done) => {
-  done(null, user.id);
-});
-
-passport.deserializeUser((id, done) => {
-  done(null, users[id]);
-});
-
-// --- Routes ---
-app.get('/auth/google',
-  passport.authenticate('google', { scope: ['profile', 'email'] }));
-
-app.get('/auth/google/callback',
-  passport.authenticate('google', { failureRedirect: '/' }),
-  (req, res) => {
-    console.log('Successfully authenticated! User:', req.user.name);
-    console.log('Redirecting to /');
-    res.redirect('/');
-  }
-);
-
-app.get('/logout', (req, res, next) => {
-    req.logout(err => {
-        if (err) { return next(err); }
-        res.redirect('/');
-    });
-});
-
-// --- Serve index.html for the root path using express.static ---
-// The express.static middleware handles serving index.html by default if present
-// at the root of the 'public' directory when a root path is requested.
-
-app.use('/api', apiRouter);
-
-
-// --- Start Server ---
-app.listen(PORT, () => {
-  console.log(`🚀 Server is running on http://localhost:${PORT}`);
-});
+/* --- RECURSIVE GRID & PANE STYLES --- */
+.grid-container {
+    display: flex;
+    height: 100%;
+    width: 100%;
+}
+.split-col {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+.split-pane {
+    background-color: #1e1f20;
+    border: 1px solid #333;
+    border-radius: 4px;
+    margin: 4px;
+    overflow: auto;
+    display: flex;
+    flex-direction: column;
+}
+.pane-header {
+    background-color: #2a2a2d;
+    padding: 4px 8px;
+    font-size: 12px;
+    color: #aaa;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    min-height: 28px;
+}
+.pane-header button {
+    background: none;
+    border: 1px solid #555;
+    color: #aaa;
+    cursor: pointer;
+    border-radius: 4px;
+    padding: 2px 6px;
+}
+.pane-header button:hover {
+    background-color: #3a3d40;
+}
+.gutter {
+    background-color: #333;
+    z-index: 10;
+}
+.gutter.gutter-vertical { cursor: col-resize; }
+.gutter.gutter-horizontal { cursor: row-resize; }
