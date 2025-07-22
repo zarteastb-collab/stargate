@@ -55,8 +55,28 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/node_modules', express.static(path.join(__dirname, 'node_modules')));
 
 // --- Passport.js Configuration ---
+passport.use(new GoogleStrategy({
+    clientID: process.env.GOOGLE_CLIENT_ID,
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    callbackURL: "/auth/google/callback"
+  },
+  (accessToken, refreshToken, profile, done) => {
+    console.log("Google profile received:", profile);
+    users[profile.id] = { id: profile.id, name: profile.displayName, email: profile.emails[0].value, photo: profile.photos[0].value };
+    return done(null, users[profile.id]);
+  }
+));
+passport.serializeUser((user, done) => {
+  done(null, user.id);
+});
+
+passport.deserializeUser((id, done) => {
+  done(null, users[id]);
+});
+
+// --- Routes ---
 app.get('/auth/google',
-  passport.authenticate('google', { scope: ['profile', 'email'] })); [cite: 37]
+  passport.authenticate('google', { scope: ['profile', 'email'] }));
 
 app.get('/auth/google/callback',
   passport.authenticate('google', { failureRedirect: '/' }),
@@ -65,24 +85,24 @@ app.get('/auth/google/callback',
     console.log('Redirecting to /');
     res.redirect('/');
   }
-); [cite: 38]
+);
 
 app.get('/logout', (req, res, next) => {
     req.logout(err => {
         if (err) { return next(err); }
         res.redirect('/');
     });
-}); [cite: 39]
+});
 
 // --- Serve index.html for the root path ---
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-app.use('/api', apiRouter); [cite: 40]
+app.use('/api', apiRouter);
 
 
 // --- Start Server ---
 app.listen(PORT, () => {
-  console.log(`🚀 Server is running on http://localhost:${PORT}`); [cite: 40]
+  console.log(`🚀 Server is running on http://localhost:${PORT}`);
 });
