@@ -1,4 +1,3 @@
----START server.js CONTENT---
 // server.js
 
 import express from 'express';
@@ -99,4 +98,3 @@ app.use('/api', apiRouter);
 app.listen(PORT, () => {
   console.log(`🚀 Server is running on http://localhost:${PORT}`);
 });
----END server.js CONTENT---
